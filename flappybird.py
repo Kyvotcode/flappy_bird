@@ -3,7 +3,7 @@ import os
 import random
 
 TELA_LARGURA = 500
-TELA_ALTURA = 800
+TELA_ALTURA = 700
 
 IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'pipe.png')))
 IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(os.path.join('imgs', 'base.png')))
@@ -43,55 +43,55 @@ class Passaro:
     def mover(self):
         #calcular o deslocamento
         self.tempo += 1
-        deslocamento = 1.5 * (self.tempo*2) * self.velocidade * self.tempo
+        deslocamento = 1.5 * (self.tempo**2) + self.velocidade * self.tempo
         
     #restringir o deslocamento
-        if deslocamento > 16:
-            deslocamento = 16
+        if deslocamento > 15:
+            deslocamento = 15
         elif deslocamento < 0:
             deslocamento -= 2
             
         self.y += deslocamento
     
-    # o angulo do passaro
-        if deslocamento < 0 or self.y < (self.altura + 50):
+        # o angulo do passaro
+        if deslocamento < 0 or self.y < (self.altura + 5):
             if self.angulo < self.ROTACAO_MAXIMA:
                 self.angulo = self.ROTACAO_MAXIMA
         else:
             if self.angulo > -90:
                 self.angulo -= self.VELOCIDADE_ROTACAO
                 
-def desenhar(self, tela):
+    def desenhar(self, tela):
     # definir qual imagem do passaro vai usar
-    self.contagem_imagem += 1 
+        self.contagem_imagem += 1 
     
-    if self.contagem_imagem < self.TEMPO_ANIMACAO:
-        self.imagem = self.IMGS[0]
-    elif self.contagem_imagem < self.TEMPO_ANIMACAO*2:
-        self.imagem = self.IMGS[1]
-    elif self.contagem_imagem < self.TEMPO_ANIMACAO*3:
-        self.imagem = self.IMGS[2]
-    elif self.contagem_imagem < self.TEMPO_ANIMACAO*4:
-        self.imagem = self.IMGS[1]
-    elif self.contagem_imagem >= self.TEMPO_ANIMACAO*4 + 1:
-        self.imagem = self.IMGS[0]
-        self.contagem_imagem = 0
-    
-    
-    # se o passaro cair nao bater asa
-    if self.angulo <= -80:
-        self.imagem = self.IMGS[1]
-        self.contagem_imagem = self.TEMPO_ANIMACAO*2
+        if self.contagem_imagem < self.TEMPO_ANIMACAO:
+         self.imagem = self.IMGS[0]
+        elif self.contagem_imagem < self.TEMPO_ANIMACAO*2:
+            self.imagem = self.IMGS[1]
+        elif self.contagem_imagem < self.TEMPO_ANIMACAO*3:
+            self.imagem = self.IMGS[2]
+        elif self.contagem_imagem < self.TEMPO_ANIMACAO*4:
+            self.imagem = self.IMGS[1]
+        elif self.contagem_imagem >= self.TEMPO_ANIMACAO*4 + 1:
+            self.imagem = self.IMGS[0]
+            self.contagem_imagem = 0
     
     
-    # desenhar a imagem                                    
-    imagem_rotacionada = pygame.transform.rotate(self.imagem, self.angulo)
-    pos_centro_imagem = self.imagem.get_rect(topleft=(self.x, self.y)).center
-    retangulo = imagem_rotacionada.get_rect(center=pos_centro_imagem)
-    tela.blit(imagem_rotacionada, retangulo.topleft)
+        # se o passaro cair nao bater asa
+        if self.angulo <= -80:
+            self.imagem = self.IMGS[1]
+            self.contagem_imagem = self.TEMPO_ANIMACAO*2
+    
+    
+        # desenhar a imagem                                    
+        imagem_rotacionada = pygame.transform.rotate(self.imagem, self.angulo)
+        pos_centro_imagem = self.imagem.get_rect(topleft=(self.x, self.y)).center
+        retangulo = imagem_rotacionada.get_rect(center=pos_centro_imagem)
+        tela.blit(imagem_rotacionada, retangulo.topleft)
 
-def get_mask(self):
-    return pygame.mask.from_surface(self.imagem)
+    def get_mask(self):
+        return pygame.mask.from_surface(self.imagem)
 
 
 class Cano:
@@ -175,8 +175,8 @@ def desenhar_tela(tela, passaros, canos, chao, pontos):
     
 def main():
     passaros = [Passaro(230, 350)]
-    chao = Chao(730)
-    canos = [Cano(700)]
+    chao = Chao(630)
+    canos = [Cano(600)]
     tela = pygame.display.set_mode((TELA_LARGURA, TELA_ALTURA))
     pontos = 0
     relogio = pygame.time.Clock()
@@ -184,8 +184,8 @@ def main():
     rodando =True
     while rodando:
         relogio.tick(30)
-        
-        # interação com o BURRO do usuario
+        remover_canos = []
+        # interação com o BURRO do usuario 
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 rodando = False
