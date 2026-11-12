@@ -11,3 +11,4 @@ Já coloquei um Venv interno, mas para usá-lo segue as instruções:
     - Se for usar o venv tem que rodar pelo terminal: NomeDoArquivo.py
 
 ## alguma hora sai
+### Será que sai mesmo?
