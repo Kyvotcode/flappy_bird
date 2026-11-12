@@ -16,7 +16,7 @@ IMAGEMS_PASSARO = [
 
 pygame.font.init()
 FONTE_PONTOS = pygame.font.SysFont('arial', 50)
-
+FONTE_GAMEOVER = pygame.font.SysFont('arial', 25)
 class Passaro:
     IMGS = IMAGEMS_PASSARO
     # animações da rotação
@@ -161,7 +161,7 @@ class Chao:
         tela.blit(self.IMAGEM, (self.x1, self.y))
         tela.blit(self.IMAGEM, (self.x2, self.y))
         
-def desenhar_tela(tela, passaros, canos, chao, pontos):
+def desenhar_tela(rodando1,tela, passaros, canos, chao, pontos):
     tela.blit(IMAGEM_BACKGROUND, (0, 0))
     for passaro in passaros:
         passaro.desenhar(tela)
@@ -169,10 +169,18 @@ def desenhar_tela(tela, passaros, canos, chao, pontos):
         cano.desenhar(tela)
         
     texto = FONTE_PONTOS.render(f"Pontuação: {pontos}", 1, (255, 255, 255))
-    tela.blit(texto, (TELA_LARGURA - 10 - texto.get_width(), 10))
+    tela.blit(texto, (TELA_LARGURA - 10 - texto.get_width(), 15))
     chao.desenhar(tela)
+    if not rodando1:
+        # Linha 1
+        linha1 = FONTE_GAMEOVER.render(f"Game Over! Fez {pontos} pontos", 1, (255, 255, 255))
+        tela.blit(linha1, (TELA_LARGURA / 2 - linha1.get_width() / 2, TELA_ALTURA / 2 - 50))
+
+        # Linha 2
+        linha2 = FONTE_GAMEOVER.render("Aperte W para reiniciar", 1, (255, 255, 255))
+        tela.blit(linha2, (TELA_LARGURA / 2 - linha2.get_width() / 2, TELA_ALTURA / 2 + 10))
     pygame.display.update()
-    
+
 def main():
     passaros = [Passaro(230, 350)]
     chao = Chao(630)
@@ -181,7 +189,8 @@ def main():
     pontos = 0
     relogio = pygame.time.Clock()
     
-    rodando =True
+    rodando = True
+    rodando1 = True
     while rodando:
         relogio.tick(30)
         remover_canos = []
@@ -195,7 +204,9 @@ def main():
                 if evento.key == pygame.K_SPACE:
                     for passaro in passaros:
                         passaro.pular()
-           
+            if evento.type == pygame.KEYUP:
+                if evento.key == pygame.K_w:
+                    main()
         # mover as coisas             
         for passaro in passaros:
             passaro.mover()
@@ -206,6 +217,8 @@ def main():
             for i, passaro in enumerate(passaros):
                 if cano.colidir(passaro):
                     passaros.pop(i)
+                    rodando1 = False
+
                 if not cano.passou and passaro.x > cano.x:
                    cano.passou = True
                    adicionar_cano = True
@@ -223,10 +236,13 @@ def main():
         for i, passaro in enumerate(passaros):
             if (passaro.y + passaro.imagem.get_height()) > chao.y or passaro.y < 0:
                 passaros.pop(i)
+                rodando1 = False
                 # aqui precisa de um GameOver
+                #quit()
             
                 
-        desenhar_tela(tela, passaros, canos, chao, pontos)
-        
+        desenhar_tela(rodando1, tela, passaros, canos, chao, pontos)
+
+
 if __name__ == '__main__':
     main()
