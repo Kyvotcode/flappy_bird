@@ -45,7 +45,7 @@ class Passaro:
         self.tempo += 1
         deslocamento = 1.5 * (self.tempo**2) + self.velocidade * self.tempo
         
-    #restringir o deslocamento
+    #restringir o deslocamento 
         if deslocamento > 15:
             deslocamento = 15
         elif deslocamento < 0:
@@ -223,6 +223,7 @@ def main():
         for i, passaro in enumerate(passaros):
             if (passaro.y + passaro.imagem.get_height()) > chao.y or passaro.y < 0:
                 passaros.pop(i)
+                # aqui precisa de um GameOver
             
                 
         desenhar_tela(tela, passaros, canos, chao, pontos)
